@@ -14,7 +14,19 @@ pub fn main() !void {
     var bw = std.io.bufferedWriter(stdout_file);
     const stdout = bw.writer();
 
-    //////////////////////////////////////
+    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+
+    try bw.flush(); // don't forget to flush!
+}
+
+// pub fn error_handler() void {
+// }
+
+test "font_demo" {
+    const stdout_file = std.io.getStdOut().writer();
+    var bw = std.io.bufferedWriter(stdout_file);
+    const stdout = bw.writer();
+
     // https://github.com/libharu/libharu/blob/master/demo/font_demo.c
     const page_title = "Font Demo";
     var pdf = c.HPDF_New(null, null);
@@ -88,19 +100,6 @@ pub fn main() !void {
     _ = c.HPDF_Page_EndText(page);
 
     _ = c.HPDF_SaveToFile(pdf, "./font_demo.pdf");
-    //////////////////////////////////////
-
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
 
     try bw.flush(); // don't forget to flush!
-}
-
-// pub fn error_handler() void {
-// }
-
-test "simple test" {
-    var list = std.ArrayList(i32).init(std.testing.allocator);
-    defer list.deinit(); // try commenting this out and see if zig detects the memory leak!
-    try list.append(42);
-    try std.testing.expectEqual(@as(i32, 42), list.pop());
 }

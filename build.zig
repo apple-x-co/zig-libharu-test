@@ -15,7 +15,6 @@ pub fn build(b: *std.build.Builder) void {
     exe.addIncludePath("/usr/local/include"); // /usr/local/include/hpdf.h
     exe.addLibraryPath("/usr/local/lib"); // /usr/local/lib/libhpdf.a
     exe.linkSystemLibrary("hpdf"); // libhpdf.a を検索
-    // // libs/libharu/include/hpdf_namedict.h
     exe.addCSourceFiles(&.{"libs/libharu/src/hpdf_doc.c"}, &.{});
     exe.linkLibC();
     exe.setTarget(target);
@@ -32,6 +31,11 @@ pub fn build(b: *std.build.Builder) void {
     run_step.dependOn(&run_cmd.step);
 
     const exe_tests = b.addTest("src/main.zig");
+    exe_tests.addIncludePath("/usr/local/include"); // /usr/local/include/hpdf.h
+    exe_tests.addLibraryPath("/usr/local/lib"); // /usr/local/lib/libhpdf.a
+    exe_tests.linkSystemLibrary("hpdf"); // libhpdf.a を検索
+    exe_tests.addCSourceFiles(&.{"libs/libharu/src/hpdf_doc.c"}, &.{});
+    exe_tests.linkLibC();
     exe_tests.setTarget(target);
     exe_tests.setBuildMode(mode);
 
