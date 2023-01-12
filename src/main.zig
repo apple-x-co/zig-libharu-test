@@ -100,6 +100,7 @@ test "font_demo" {
 
     _ = c.HPDF_Page_EndText(page);
 
+    // save the document to a file
     _ = c.HPDF_SaveToFile(pdf, "./output/font_demo.pdf");
 
     try bw.flush(); // don't forget to flush!
@@ -140,7 +141,6 @@ test "text_demo" {
     _ = c.HPDF_Page_MoveTextPos(page, 60, c.HPDF_Page_GetHeight(page) - 60);
 
     // font size
-
     var fsize: f32 = 8.0;
     while (fsize < 60) : (fsize *= 1.5) {
         // set style and size of font.
@@ -168,5 +168,86 @@ test "text_demo" {
         // _ = c.HPDF_Page_ShowText(page, c_formatted.ptr);
     }
 
+    // font color
+    _ = c.HPDF_Page_SetFontAndSize(page, font, 8);
+    _ = c.HPDF_Page_MoveTextPos(page, 0, -30);
+    _ = c.HPDF_Page_ShowText(page, "Font color");
+
+    _ = c.HPDF_Page_SetFontAndSize(page, font, 18);
+    _ = c.HPDF_Page_MoveTextPos(page, 0, -20);
+
+    var i: u64 = 0;
+    var len = sample_text.len;
+    while (i < len) : (i += 1) {
+        var r: f32 = @intToFloat(f32, i) / @intToFloat(f32, len);
+        var g: f32 = 1.0 - @intToFloat(f32, i) / @intToFloat(f32, len);
+
+        var text = try std.fmt.allocPrintZ(allocator, "{s}", .{sample_text[i .. i + 1]});
+        defer allocator.free(text);
+
+        _ = c.HPDF_Page_SetRGBFill(page, r, g, 0.0);
+        _ = c.HPDF_Page_ShowText(page, text.ptr);
+    }
+    _ = c.HPDF_Page_MoveTextPos(page, 0, -25);
+
+    i = 0;
+    while (i < len) : (i += 1) {
+        var r: f32 = @intToFloat(f32, i) / @intToFloat(f32, len);
+        var b: f32 = 1.0 - @intToFloat(f32, i) / @intToFloat(f32, len);
+
+        var text = try std.fmt.allocPrintZ(allocator, "{s}", .{sample_text[i .. i + 1]});
+        defer allocator.free(text);
+
+        _ = c.HPDF_Page_SetRGBFill(page, r, 1.0, b);
+        _ = c.HPDF_Page_ShowText(page, text.ptr);
+    }
+    _ = c.HPDF_Page_MoveTextPos(page, 0, -25);
+
+    i = 0;
+    while (i < len) : (i += 1) {
+        var b: f32 = @intToFloat(f32, i) / @intToFloat(f32, len);
+        var g: f32 = 1.0 - @intToFloat(f32, i) / @intToFloat(f32, len);
+
+        var text = try std.fmt.allocPrintZ(allocator, "{s}", .{sample_text[i .. i + 1]});
+        defer allocator.free(text);
+
+        _ = c.HPDF_Page_SetRGBFill(page, 1.0, g, b);
+        _ = c.HPDF_Page_ShowText(page, text.ptr);
+    }
+    _ = c.HPDF_Page_MoveTextPos(page, 0, -25);
+
+    _ = c.HPDF_Page_EndText(page);
+
+    var ypos: c.HPDF_REAL = 450;
+
+    // Font rendering mode
+    _ = c.HPDF_Page_SetFontAndSize(page, font, 32);
+    _ = c.HPDF_Page_SetRGBFill(page, 0.5, 0.5, 0.0);
+    _ = c.HPDF_Page_SetLineWidth(page, 1.5);
+
+    // PDF_FILL
+    show_description(page, 60, ypos, "RenderingMode=PDF_FILL");
+    _ = c.HPDF_Page_SetTextRenderingMode(page, c.HPDF_FILL);
+    _ = c.HPDF_Page_BeginText(page);
+    _ = c.HPDF_Page_TextOut(page, 60, ypos, "ABCabc123");
+    _ = c.HPDF_Page_EndText(page);
+
+    // save the document to a file
     _ = c.HPDF_SaveToFile(pdf, "./output/text_demo.pdf");
+}
+
+fn show_description(page: c.HPDF_Page, x: c.HPDF_REAL, y: c.HPDF_REAL, text: []const u8) void {
+    const fsize = c.HPDF_Page_GetCurrentFontSize(page);
+    const font = c.HPDF_Page_GetCurrentFont(page);
+    const color = c.HPDF_Page_GetRGBFill(page);
+
+    _ = c.HPDF_Page_BeginText(page);
+    _ = c.HPDF_Page_SetRGBFill(page, 0, 0, 0);
+    _ = c.HPDF_Page_SetTextRenderingMode(page, c.HPDF_FILL);
+    _ = c.HPDF_Page_SetFontAndSize(page, font, 10);
+    _ = c.HPDF_Page_TextOut(page, x, y - 12, text.ptr);
+    _ = c.HPDF_Page_EndText(page);
+
+    _ = c.HPDF_Page_SetFontAndSize(page, font, fsize);
+    _ = c.HPDF_Page_SetRGBFill(page, color.r, color.g, color.b);
 }
