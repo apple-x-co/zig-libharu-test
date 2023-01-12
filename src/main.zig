@@ -23,11 +23,12 @@ pub fn main() !void {
 // }
 
 test "font_demo" {
+    // https://github.com/libharu/libharu/blob/master/demo/font_demo.c
+
     const stdout_file = std.io.getStdOut().writer();
     var bw = std.io.bufferedWriter(stdout_file);
     const stdout = bw.writer();
 
-    // https://github.com/libharu/libharu/blob/master/demo/font_demo.c
     const page_title = "Font Demo";
     var pdf = c.HPDF_New(null, null);
     defer c.HPDF_Free(pdf);
@@ -99,7 +100,73 @@ test "font_demo" {
 
     _ = c.HPDF_Page_EndText(page);
 
-    _ = c.HPDF_SaveToFile(pdf, "./font_demo.pdf");
+    _ = c.HPDF_SaveToFile(pdf, "./output/font_demo.pdf");
 
     try bw.flush(); // don't forget to flush!
+}
+
+test "text_demo" {
+    // https://github.com/libharu/libharu/blob/master/demo/text_demo.c
+
+    const allocator = std.testing.allocator;
+
+    const sample_text = "abcdefgABCDEFG123!#$%&+-@?";
+    // const sample_text2 = "The quick brown fox jumps over the lazy dog.";
+
+    const page_title = "Text Demo";
+    var pdf = c.HPDF_New(null, null);
+    defer c.HPDF_Free(pdf);
+
+    // // set compression mode
+    _ = c.HPDF_SetCompressionMode(pdf, c.HPDF_COMP_ALL);
+
+    // create default-font
+    const font = c.HPDF_GetFont(pdf, "Helvetica", null);
+
+    // add a new page object.
+    var page = c.HPDF_AddPage(pdf);
+
+    // draw grid to the page
+    // print_grid  (pdf, page);
+
+    // print the title of the page (with positioning center).
+    _ = c.HPDF_Page_SetFontAndSize(page, font, 24);
+    var tw = c.HPDF_Page_TextWidth(page, page_title);
+    _ = c.HPDF_Page_BeginText(page);
+    _ = c.HPDF_Page_TextOut(page, (c.HPDF_Page_GetWidth(page) - tw) / 2, c.HPDF_Page_GetHeight(page) - 50, page_title);
+    _ = c.HPDF_Page_EndText(page);
+
+    _ = c.HPDF_Page_BeginText(page);
+    _ = c.HPDF_Page_MoveTextPos(page, 60, c.HPDF_Page_GetHeight(page) - 60);
+
+    // font size
+
+    var fsize: f32 = 8.0;
+    while (fsize < 60) : (fsize *= 1.5) {
+        // set style and size of font.
+        _ = c.HPDF_Page_SetFontAndSize(page, font, fsize);
+
+        // set the position of the text.
+        _ = c.HPDF_Page_MoveTextPos(page, 0, -5 - fsize);
+
+        // measure the number of characters which included in the page.
+        var len = c.HPDF_Page_MeasureText(page, sample_text, c.HPDF_Page_GetWidth(page) - 120, c.HPDF_FALSE, null);
+
+        // truncate the text.
+        var text = try std.fmt.allocPrintZ(allocator, "{s}", .{sample_text[0..len]});
+        defer allocator.free(text);
+        _ = c.HPDF_Page_ShowText(page, text.ptr);
+
+        // print the description.
+        _ = c.HPDF_Page_MoveTextPos(page, 0, -10);
+        _ = c.HPDF_Page_SetFontAndSize(page, font, 8);
+        var text2 = try std.fmt.allocPrintZ(allocator, "Fontsize={d}", .{fsize});
+        defer allocator.free(text2);
+        _ = c.HPDF_Page_ShowText(page, text2.ptr);
+        // var formatted = try std.fmt.bufPrint(&buf, "Fontsize={}", .{fsize});
+        // var c_formatted = std.mem.span(@ptrCast([*:0]const u8, formatted));
+        // _ = c.HPDF_Page_ShowText(page, c_formatted.ptr);
+    }
+
+    _ = c.HPDF_SaveToFile(pdf, "./output/text_demo.pdf");
 }
