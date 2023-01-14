@@ -3,6 +3,7 @@ const font_demo = @import("demo/font_demo.zig");
 const text_demo = @import("demo/text_demo.zig");
 const text_demo2 = @import("demo/text_demo2.zig");
 const ttfont_demo = @import("demo/ttfont_demo.zig");
+const ttfont_demo_jp = @import("demo/ttfont_demo_jp.zig");
 
 pub fn main() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
@@ -19,6 +20,7 @@ pub fn main() !void {
     try text_demo.run();
     try text_demo2.run();
     try ttfont_demo.run();
+    try ttfont_demo_jp.run();
 
     try stdout.print("Run `zig build test` to run the tests.\n", .{});
 
