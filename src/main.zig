@@ -8,6 +8,7 @@ const jpfont_demo = @import("demo/jpfont_demo.zig");
 const image_demo = @import("demo/image_demo.zig");
 const jpeg_demo = @import("demo/jpeg_demo.zig");
 const png_demo = @import("demo/png_demo.zig");
+const raw_image_demo = @import("demo/raw_image_demo.zig");
 
 pub fn main() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
@@ -29,6 +30,7 @@ pub fn main() !void {
     try image_demo.run();
     try jpeg_demo.run();
     try png_demo.run();
+    try raw_image_demo.run();
 
     try stdout.print("Run `zig build test` to run the tests.\n", .{});
 
