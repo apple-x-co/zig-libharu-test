@@ -10,6 +10,7 @@ const jpeg_demo = @import("demo/jpeg_demo.zig");
 const png_demo = @import("demo/png_demo.zig");
 const raw_image_demo = @import("demo/raw_image_demo.zig");
 const arc_demo = @import("demo/arc_demo.zig");
+const ext_gstate_demo = @import("demo/ext_gstate_demo.zig");
 
 pub fn main() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
@@ -33,6 +34,7 @@ pub fn main() !void {
     try png_demo.run();
     try raw_image_demo.run();
     try arc_demo.run();
+    try ext_gstate_demo.run();
 
     try stdout.print("Run `zig build test` to run the tests.\n", .{});
 
