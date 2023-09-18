@@ -115,7 +115,7 @@ fn draw_graph(page: c.HPDF_Page) void {
     _ = c.HPDF_Page_SetLineWidth(page, 0.5);
 
     while (i <= 17) : (i += 1) {
-        const x = @intToFloat(f32, i * CELL_WIDTH + 40);
+        const x = @as(f32, @floatFromInt(i * CELL_WIDTH + 40));
 
         _ = c.HPDF_Page_MoveTo(page, x, PAGE_HEIGHT - 60);
         _ = c.HPDF_Page_LineTo(page, x, 40);
@@ -133,7 +133,7 @@ fn draw_graph(page: c.HPDF_Page) void {
     // /* Draw horizontal lines. */
     i = 0;
     while (i <= 15) : (i += 1) {
-        const y = @intToFloat(f32, i * CELL_HEIGHT + 40);
+        const y = @as(f32, @floatFromInt(i * CELL_HEIGHT + 40));
 
         _ = c.HPDF_Page_MoveTo(page, 40, y);
         _ = c.HPDF_Page_LineTo(page, PAGE_WIDTH - 40, y);
@@ -157,11 +157,11 @@ fn draw_fonts(page: c.HPDF_Page) void {
     while (i < 17) : (i += 1) {
         var j: u32 = 1;
         while (j < 17) : (j += 1) {
-            const y = PAGE_HEIGHT - 55 - ((@intToFloat(f32, i) - 1) * @intToFloat(f32, CELL_HEIGHT));
-            const x = @intToFloat(f32, j) * @intToFloat(f32, CELL_WIDTH) + 50;
+            const y = PAGE_HEIGHT - 55 - ((@as(f32, @floatFromInt(i)) - 1) * @as(f32, @floatFromInt(CELL_HEIGHT)));
+            const x = @as(f32, @floatFromInt(j)) * @as(f32, @floatFromInt(CELL_WIDTH)) + 50;
 
             // FIXME: 9行目以降が表示されない
-            const char: u8 = @intCast(u8, (i - 1) * 16 + (j - 1));
+            const char: u8 = @as(u8, @intCast((i - 1) * 16 + (j - 1)));
             if (char >= 32) {
                 var buf: [2]u8 = undefined;
                 var text = std.fmt.bufPrintZ(&buf, "{u}", .{char}) catch "";

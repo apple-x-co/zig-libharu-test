@@ -51,7 +51,7 @@ fn draw_image(allocator: std.mem.Allocator, pdf: c.HPDF_Doc, filename: []const u
     const image = c.HPDF_LoadJpegImageFromFile(pdf, filename1.ptr);
 
     // Draw image to the canvas.
-    _ = c.HPDF_Page_DrawImage(page, image, x, y, @intToFloat(f32, c.HPDF_Image_GetWidth(image)), @intToFloat(f32, c.HPDF_Image_GetHeight(image)));
+    _ = c.HPDF_Page_DrawImage(page, image, x, y, @as(f32, @floatFromInt(c.HPDF_Image_GetWidth(image))), @as(f32, @floatFromInt(c.HPDF_Image_GetHeight(image))));
 
     // Print the text.
     _ = c.HPDF_Page_BeginText(page);

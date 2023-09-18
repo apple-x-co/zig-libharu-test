@@ -39,8 +39,8 @@ pub fn run() !void {
     const image2 = c.HPDF_LoadPngImageFromFile(pdf, "src/demo/pngsuite/basn0g01.png");
     const image3 = c.HPDF_LoadPngImageFromFile(pdf, "src/demo/pngsuite/maskimage.png");
 
-    const iw: f32 = @intToFloat(f32, c.HPDF_Image_GetWidth(image));
-    const ih: f32 = @intToFloat(f32, c.HPDF_Image_GetHeight(image));
+    const iw: f32 = @as(f32, @floatFromInt(c.HPDF_Image_GetWidth(image)));
+    const ih: f32 = @as(f32, @floatFromInt(c.HPDF_Image_GetHeight(image)));
 
     _ = c.HPDF_Page_SetLineWidth(page, 0.5);
 

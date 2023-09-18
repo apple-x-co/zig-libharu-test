@@ -58,7 +58,7 @@ pub fn run() !void {
     const samp_text = "abcdefgABCDEFG12345!#$%&+-@?";
 
     for (font_list) |font_name| {
-        var c_font_name = std.mem.span(@ptrCast([*:0]const u8, font_name));
+        var c_font_name = std.mem.span(@as([*:0]const u8, @ptrCast(font_name)));
         var font = c.HPDF_GetFont(pdf, c_font_name.ptr, null);
 
         // print a label of text

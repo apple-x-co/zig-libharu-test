@@ -78,8 +78,8 @@ pub fn run() !void {
     var i: u64 = 0;
     var len = samp_text.len;
     while (i < len) : (i += 1) {
-        var r: f32 = @intToFloat(f32, i) / @intToFloat(f32, len);
-        var g: f32 = 1.0 - @intToFloat(f32, i) / @intToFloat(f32, len);
+        var r: f32 = @as(f32, @floatFromInt(i)) / @as(f32, @floatFromInt(len));
+        var g: f32 = 1.0 - @as(f32, @floatFromInt(i)) / @as(f32, @floatFromInt(len));
 
         var text = try std.fmt.allocPrintZ(allocator, "{s}", .{samp_text[i .. i + 1]});
         defer allocator.free(text);
@@ -91,8 +91,8 @@ pub fn run() !void {
 
     i = 0;
     while (i < len) : (i += 1) {
-        var r: f32 = @intToFloat(f32, i) / @intToFloat(f32, len);
-        var b: f32 = 1.0 - @intToFloat(f32, i) / @intToFloat(f32, len);
+        var r: f32 = @as(f32, @floatFromInt(i)) / @as(f32, @floatFromInt(len));
+        var b: f32 = 1.0 - @as(f32, @floatFromInt(i)) / @as(f32, @floatFromInt(len));
 
         var text = try std.fmt.allocPrintZ(allocator, "{s}", .{samp_text[i .. i + 1]});
         defer allocator.free(text);
@@ -104,8 +104,8 @@ pub fn run() !void {
 
     i = 0;
     while (i < len) : (i += 1) {
-        var b: f32 = @intToFloat(f32, i) / @intToFloat(f32, len);
-        var g: f32 = 1.0 - @intToFloat(f32, i) / @intToFloat(f32, len);
+        var b: f32 = @as(f32, @floatFromInt(i)) / @as(f32, @floatFromInt(len));
+        var g: f32 = 1.0 - @as(f32, @floatFromInt(i)) / @as(f32, @floatFromInt(len));
 
         var text = try std.fmt.allocPrintZ(allocator, "{s}", .{samp_text[i .. i + 1]});
         defer allocator.free(text);
